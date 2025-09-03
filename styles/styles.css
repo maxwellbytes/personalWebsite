@@ -1,0 +1,568 @@
+/*fix positioning shit with header*/
+
+@font-face {
+  font-family: data;
+  src: url(../fonts/data-latin.ttf);
+  /*src: url(/fonts/data-latin-webfont.woff);*/
+}
+
+/*VARIABLES*/
+:root {
+  --cBlue: #7189FF;
+  --prBlue: #172a3a;
+  --txtBlue: #0d2131;
+  --shadowGreen: rgba(0,0,0,0.3);
+  --mGren: #004346;
+  --dmGren: #00272a;
+  --aGrey: #98B6B1;
+  --zomp: #629677;
+}
+
+html {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  /*background-color: var(--zomp);*/
+  background-color: black;
+  background-image: url("../imgs/Tesseract.gif");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: auto;
+  color: white;
+  height: 100%;
+  padding-top: 25px;
+  cursor: url("../imgs/cursor3.png"), auto;
+}
+
+
+button {
+  /*potentially sort the border/shadow stuff in to a "window" class*/
+  /*old border when this thing was still in light mode (ew)
+  box-shadow: inset -1px 0 gray,inset -1px 1px #dfdfdf,inset -1px -1px gray,inset 0 0 0 1px #dfdfdf;
+  background-color: silver;
+  border: 1px solid;
+  border-left-color: #fff;
+  border-top-color: #fff;
+  */
+  box-shadow: inset -1px 0 var(--txtBlue),inset -1px 1px var(--txtBlue),inset -1px -1px var(--txtBlue),inset 0 0 0 1px var(--txtBlue);
+  background-color: var(--shadowGreen);
+  border: 1px solid;
+  border-left-color: var(--mGren);
+  border-top-color: var(--mGren);
+  border-right-color: var(--dmGren);
+  border-bottom-color: var(--dmGren);
+}
+
+.buttons {
+  position: absolute;
+  align-items: center;
+  /*absolute values my beloathed
+  (old value storage)
+  right: 7px;
+  top: 8.5px;
+  bottom: 4.5px;
+  */
+  right: 7px;
+  top: 4.5px;
+  bottom: 8.5px;
+  height: 16px;
+  line-height: 0px;
+  box-sizing: inherit;
+  display: flex;
+  gap: 0;
+
+  
+}
+
+.buttons button {
+  width: 20px;
+  height: 20px;
+  /*font-size: 1.05em;*/
+  padding: 0px;
+  cursor: url("../imgs/cursor3.png"), auto;
+  position: relative;
+  z-index: 0;
+  color: white;
+}
+
+#tempCred {
+  color: var(--cBlue)
+}
+
+/* testing out button anims*/
+#testDiv {
+  display: flex;
+  justify-content: right;
+}
+/*
+.btn {
+    margin: 20px;
+}*/
+
+.buttons button.btnActive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.taskbarButton .btnActive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* end testing*/
+
+/* folder css & anims*/
+.folder {
+  margin: 8px;
+  box-shadow: none; /* remove prev styling*/
+  border: none;     /* ^^ */
+  width: 96px;
+  height: 96px;
+  background-image: url("../imgs/folderIconClosedLarge.png");
+  background-size: cover;
+  cursor: url("../imgs/cursor3.png"), auto;
+}
+
+.folder:hover {
+  width: 96px;
+  height: 96px;
+  background-image: url("../imgs/folderIcon2OpenLarge.png");
+}
+
+a {
+  cursor: url('../imgs/cursor3.png') auto;
+}
+
+.drag {
+  font-size: 1.2em;
+  font-family: data;
+  position: absolute;
+  /*box-shadow: inset -1px 0 gray,inset -1px 1px #dfdfdf,inset -1px -1px gray,inset 0 0 0 1px #dfdfdf;*/
+  /*background-color: silver;*/
+  /*background-color: #c3c3c3;*/
+  background-color: var(--prBlue);
+  user-select: none;
+  
+  /*
+  border: 1px solid;
+  border-left-color: #fff;
+  border-top-color: #fff;
+  */
+
+  /*old attempt at syncing color change but it will have to do for now (8/27) im sick of staring at this*/
+  border: 3px solid transparent;
+  border-image: linear-gradient(-90deg, #99ccff, var(--cBlue)) 1;
+  animation: border-rotate 10s linear infinite;
+  
+  /*border: none;
+  overflow: visible;*/
+
+  text-align: center;
+  width: 30%;
+  height: fit-content;
+  max-width: 50%;
+  max-height: 70%;
+  /*padding: 2px;*/
+
+  /*width: 400px;
+  height: 400px;*/
+  /*box-shadow: 10px 10px 5px var(--shadowGreen);*/
+}
+
+.drag::before {
+  content: "";
+  position: absolute;
+  top: -3px; left: -3px; right: -3px; bottom: -3px;
+
+  /* tried to make this gradient background work and now i have a headache
+  background: linear-gradient(90deg, #99ccff, var(--cBlue));
+  background-size: 200% 100%;
+  animation: gradient-animation 10s infinite linear;
+  mask-image:
+      linear-gradient(#fff 0 0);
+  mask-repeat: no-repeat;
+  mask-size: calc(100% - 6px) calc(100% - 6px);
+  mask-position: 3px 3px;
+  box-sizing: border-box;
+  padding: 0px;
+  */
+
+  pointer-events: none;
+}
+
+@keyframes border-rotate {
+  0% { border-image-source: linear-gradient(90deg, #99ccff, var(--cBlue)); }
+  100% { border-image-source: linear-gradient(450deg, #99ccff, var(--cBlue)); }
+}
+
+.dragHeader {
+  /*padding: 10px 0;*/
+  /*padding: 2px;*/
+  /*margin: 1px;*/
+  /*cursor: move;*/
+  z-index: 10;
+  /*background-color: var(--prBlue);
+  color: var(--cBlue);*/
+  background: linear-gradient(to right,#99ccff,var(--cBlue));
+  animation: gradient-animation 10s infinite linear;
+  background-size: 400% 100%;
+  padding-bottom: 2px;
+  cursor: url("../imgs/cursor3.png"), auto;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+    /*
+    from {
+        background-position: 0% 100%;
+    }
+    to {
+        background-position: 100% 0%;;
+    }
+        */
+}
+
+.drag > :not(.dragHeader) {
+  /*padding-left: 24px;
+  padding-right: 24px;*/
+  box-sizing: border-box;
+}
+
+.drag p {
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+
+.drag.currDrag .dragHeader{
+    /*cursor: grabbing;*/
+}
+
+.headerButton {
+  all: unset;
+}
+
+#blogHeader {
+  text-align: right;
+}
+
+
+#blogging {
+  top: 20vh;
+  left: 34vw;
+}
+
+#prod {
+  z-index: 10;
+  top: 15vh;
+  left: 15vw;
+}
+
+#prodHeader {
+    
+    /*text-align: right;*/
+}
+
+.headerButton:hover {
+  background-color: blue;
+}
+
+#testingTask {
+    padding: 20px;
+}
+
+.taskbar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  /*background-color: #c3c3c3;*/
+  background: linear-gradient(to right,#99ccff,var(--cBlue));
+  animation: gradient-animation 10s infinite linear;
+  color: var(--cBlue);
+  display: flex;
+  align-items: center;
+  /*padding: 4px 8px 4px 8px;*/
+  z-index: 100;
+  height: 40px;
+
+  
+
+  /* why do i have 2 of these???
+  border-image: linear-gradient(to right,#99ccff,var(--cBlue));*/
+}
+
+nav {
+  display: flex;
+}
+
+#start {
+  animation: textShadow 1.6s infinite;
+  font-size: 1.05em;
+  cursor: url("../imgs/cursor3.png"), auto;
+  margin-left: 5px;
+  color: white;
+  padding: 5px 10px 5px 10px;
+}
+
+.mWindows {
+  animation: textShadow 1.6s infinite;
+  font-size: 1.05em;
+  cursor: url("../imgs/cursor3.png"), auto;
+  margin-left: 5px;
+  color: white;
+  padding: 5px 10px 5px 10px;
+}
+
+
+.crt {
+  animation: textShadow 1.6s infinite;
+}
+
+.crt::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(18, 16, 16, 0.1);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: flicker 0.15s infinite;
+  z-index: 9999;
+}
+
+.crt::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes flicker {
+  0% {
+  opacity: 0.27861;
+  }
+  5% {
+  opacity: 0.34769;
+  }
+  10% {
+  opacity: 0.23604;
+  }
+  15% {
+  opacity: 0.10626;
+  }
+  20% {
+  opacity: 0.18128;
+  }
+  25% {
+  opacity: 0.10626;
+  }
+  30% {
+  opacity: 0.18128;
+  }
+  35% {
+  opacity: 0.23604;
+  }
+}
+
+@keyframes textShadow {
+  0% {
+    text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  5% {
+    text-shadow: 2.7928974010788217px 0 1px rgba(0,30,255,0.5), -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  10% {
+    text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  15% {
+    text-shadow: 0.40218538552878136px 0 1px rgba(0,30,255,0.5), -0.40218538552878136px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  20% {
+    text-shadow: 3.4794037899852017px 0 1px rgba(0,30,255,0.5), -3.4794037899852017px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  25% {
+    text-shadow: 1.6125630401149584px 0 1px rgba(0,30,255,0.5), -1.6125630401149584px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  30% {
+    text-shadow: 0.7015590085143956px 0 1px rgba(0,30,255,0.5), -0.7015590085143956px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  35% {
+    text-shadow: 3.896914047650351px 0 1px rgba(0,30,255,0.5), -3.896914047650351px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  40% {
+    text-shadow: 3.870905614848819px 0 1px rgba(0,30,255,0.5), -3.870905614848819px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  45% {
+    text-shadow: 2.231056963361899px 0 1px rgba(0,30,255,0.5), -2.231056963361899px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  50% {
+    text-shadow: 0.08084290417898504px 0 1px rgba(0,30,255,0.5), -0.08084290417898504px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  55% {
+    text-shadow: 2.3758461067427543px 0 1px rgba(0,30,255,0.5), -2.3758461067427543px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  60% {
+    text-shadow: 2.202193051050636px 0 1px rgba(0,30,255,0.5), -2.202193051050636px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  65% {
+    text-shadow: 2.8638780614874975px 0 1px rgba(0,30,255,0.5), -2.8638780614874975px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  70% {
+    text-shadow: 0.48874025155497314px 0 1px rgba(0,30,255,0.5), -0.48874025155497314px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  75% {
+    text-shadow: 1.8948491305757957px 0 1px rgba(0,30,255,0.5), -1.8948491305757957px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  80% {
+    text-shadow: 0.0833037308038857px 0 1px rgba(0,30,255,0.5), -0.0833037308038857px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  85% {
+    text-shadow: 0.09769827255241735px 0 1px rgba(0,30,255,0.5), -0.09769827255241735px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  90% {
+    text-shadow: 3.443339761481782px 0 1px rgba(0,30,255,0.5), -3.443339761481782px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  95% {
+    text-shadow: 2.1841838852799786px 0 1px rgba(0,30,255,0.5), -2.1841838852799786px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+  100% {
+    text-shadow: 2.6208764473832513px 0 1px rgba(0,30,255,0.5), -2.6208764473832513px 0 1px rgba(255,0,80,0.3), 0 0 3px;
+  }
+}
+
+/*
+@keyframes flicker {
+  0% {
+  opacity: 0.27861;
+  }
+  5% {
+  opacity: 0.34769;
+  }
+  10% {
+  opacity: 0.23604;
+  }
+  15% {
+  opacity: 0.90626;
+  }
+  20% {
+  opacity: 0.18128;
+  }
+  25% {
+  opacity: 0.83891;
+  }
+  30% {
+  opacity: 0.65583;
+  }
+  35% {
+  opacity: 0.67807;
+  }
+  40% {
+  opacity: 0.26559;
+  }
+  45% {
+  opacity: 0.84693;
+  }
+  50% {
+  opacity: 0.96019;
+  }
+  55% {
+  opacity: 0.08594;
+  }
+  60% {
+  opacity: 0.20313;
+  }
+  65% {
+  opacity: 0.71988;
+  }
+  70% {
+  opacity: 0.53455;
+  }
+  75% {
+  opacity: 0.37288;
+  }
+  80% {
+  opacity: 0.71428;
+  }
+  85% {
+  opacity: 0.70419;
+  }
+  90% {
+  opacity: 0.7003;
+  }
+  95% {
+  opacity: 0.36108;
+  }
+  100% {
+  opacity: 0.24387;
+  }
+}
+
+.crt::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(18, 16, 16, 0.1);
+  opacity: 0;
+  z-index: 2;
+  pointer-events: none;
+  animation: flicker 0.15s infinite;
+}
+*/
+
+/*
+.crt {
+  animation: textShadow 1.6s infinite;
+}
+
+.crt::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+*/
