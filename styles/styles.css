@@ -57,23 +57,26 @@ button {
 }
 
 .buttons {
-  position: absolute;
+  /*position: absolute;  <- prev code for when i had everything postitioned absolutely*/
+  position: relative; /*could potentially remove entirely*/
+  display: flex;
   align-items: center;
+  justify-content: right;
+  margin-right: 0.25em;
   /*absolute values my beloathed
   (old value storage)
   right: 7px;
   top: 8.5px;
   bottom: 4.5px;
   */
-  right: 7px;
+  /*right: 7px;
   top: 4.5px;
-  bottom: 8.5px;
+  bottom: 8.5px;*/
   height: 16px;
   line-height: 0px;
   box-sizing: inherit;
-  display: flex;
   gap: 0;
-
+  grid-area: btns;
   
 }
 
@@ -216,10 +219,23 @@ a {
   z-index: 10;
   /*background-color: var(--prBlue);
   color: var(--cBlue);*/
+  min-height: 22px;
+  padding: 0.1em;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: 'name btns';
+  align-items: center;
   background: linear-gradient(to right,#99ccff,var(--cBlue));
+  border-image: linear-gradient(-90deg, #99ccff, var(--cBlue)) 1;
+  animation: border-rotate 10s linear infinite;
+
+  /*Add animated border to bottom of header to center buttons vertically*/
   animation: gradient-animation 10s infinite linear;
   background-size: 400% 100%;
-  padding-bottom: 2px;
+  border-bottom: 3px solid transparent;
+
+  /*padding-bottom: 2px;*/
   cursor: url("../imgs/cursor3.png"), auto;
 }
 
