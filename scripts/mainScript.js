@@ -9,6 +9,13 @@
  * 
  * Add fullscreen functionality
  * 
+ * Change the blog window to be a list of blog entries
+ *  - need to change the way windows are unminimized??
+ *  - could just make a back button and keep the window that is (un)minimized the same "window"
+ *      - would need to store the original window
+ * 
+ * Start adding links on start page.
+ * - www.linkedin.com/in/maxwellhbrown
  */
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Sorry this code is a mess. I've been too busy trying to implement this thing that I forgot to be organized")
@@ -74,44 +81,75 @@ document.addEventListener("DOMContentLoaded", function() {
     });*/
 
     function createWindow(id) {
+        let exists = document.getElementById(id);
+        if (exists) {
+            exists.style.display = 'block';
+            zCount++;
+            exists.style.zIndex = zCount;
+            return;
+        }
         let data = windowData[id];
         if (!data) return; //why not do if data == null??
 
-        const window = document.createElement('div');
-        window.className = 'drag';
-        window.id = id;
+
+        const win = document.createElement('div');
+        win.className = 'drag';
+        win.id = id;
 
         //potentially change these based on where i put my icons
-        window.style.top = '20vh';
-        window.style.left = '40vw'
+        //window.style.top = '20vh';
+        //window.style.left = '40vw';
+
+        document.getElementById('mainScreen').appendChild(win)
+        requestAnimationFrame(() => {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const winWidth = win.offsetWidth;
+            const winHeight = win.offsetHeight;
+
+            const left = Math.max((viewportWidth - winWidth) / 2, 0);
+            const top = Math.max((viewportHeight - winHeight) / 2, 0);
+
+            win.style.left = `${left}px`;
+            win.style.top = `${top}px`
+        })
+        
+
 
         zCount++;
-        window.style.zIndex = zCount;
+        win.style.zIndex = zCount;
 
-        window.innerHTML = `
+        win.innerHTML = `
             <div class="dragHeader" id=${id}Header">
               <div class="buttons">
                 <button class="btn minim">&#x1F5D5;</button>
-                <button class="btn">&#128470;</button>
+                <button class="btn maxim">&#128470;</button>
                 <button class="btn closeBtn">&#x00d7;</button>
               </div>
             <br>
             </div>
+            <div class="windowContent">
             <h3>${data.title}</h3>
-            ${data.content}`;
+            ${data.content}
+            </div>`;
 
-            mw = window.querySelector('.minim')
+            mw = win.querySelector('.minim')
+            mx = win.querySelector('.maxim');
+            cl = win.querySelector('.closeBtn');
+
             
             addButtonEvents(mw);
+            addButtonEvents(mx);
+            addButtonEvents(cl);
 
-            window.querySelector('.minim').onclick = () => minimizeWindow(id, window);
-            window.querySelector('.closeBtn').onclick = function () {
-                //window is removed before class can be added - fix later
-                window.querySelector('.closeBtn').classList.add('btnActive')
-                window.remove();
+            win.querySelector('.minim').onclick = () => minimizeWindow(id, win);
+            win.querySelector('.maxim').onclick = () => {
+                win.classList.toggle('window_max');
+                //console.log("testing")
             }
-            document.getElementById('mainScreen').appendChild(window);
-            makeDraggable(window);
+            win.querySelector('.closeBtn').onclick = () => win.remove();
+            //document.getElementById('mainScreen').appendChild(win);
+            makeDraggable(win);
     }
 
     function makeDraggable(elem) {
@@ -159,13 +197,22 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     };
 
-    document.getElementById('blog').addEventListener('click', function() {
+    //TODO: change this to get all elemens in certain class, then pass id's individualy in a loop to avoid listing the name everythime
+    document.getElementById('blog_menu').addEventListener('click', function() {
         createWindow('blog');
-    })
+    });
+
+    document.getElementById('about_me').addEventListener('click', function() {
+        createWindow('about');
+    });
+
+    document.getElementById('cat').addEventListener('click', function() {
+        createWindow('catVid');
+    });
 
     const windowData = {
         prod: {
-            title: `"Real men test in production"`,
+            title: `<h3 class="sunTzuHeader">"Real men test in production"</h3><p class="sunTzu">-Sun Tzu</p>`,
             content: `<p>
             This website is under (heavy) construction. Once the website is actually implemented, if you experience any issues or bugs feel free to shoot me an email at
             hello@maxwellbrown.dev</p>
@@ -182,6 +229,36 @@ document.addEventListener("DOMContentLoaded", function() {
             My best "outside the class" experience was when I finished a desktop app as a personal project. I had to learn a lot of new libraries and frameworks, so it was very
             satisfying to see them all come together. It also really cemented my love for front-end development.
             </p>`
+        },
+        about: {
+            title: 'About Me',
+            content: 
+            `
+            <p>My name is Maxwell Brown (if you couldn't tell from the URL), and I'm a soon-to-be Computer Science graduate with a passion for the creative side of coding. I love turning ideas into interactive
+            projects and have developed a passion for front-end web development (along the way?).</p>
+            <p>Outside of class, I've worked as a freelance software developer where I created small projects (including static websites and desktop applications),
+            developed and tested APIs, and [idk something about the criterion/rubric projects]. That work gave me the chance to explore multiple languages outside
+            the classroom environment, and gave me the skills to persue more advanced personal projects.</p>
+            <p>When I'm not coding, you'll probably find me experimenting with 3D modeling in Blender and exploring game development in Godot. I enjoy projects that let
+            me combine problem-solving with creative design, whether that's developing(?) unique web interfaces or bringing an idea to life in 3D/Blender.</p>
+            `
+            //maybe mention the languages I know/work in plus my tech stack?
+        },
+        catVid: {
+            title: 'kitty :D',
+            content:
+            `
+            <div class="vidContainer">
+                <iframe 
+                src="https://www.youtube.com/embed/JRMqiXhKQ6s?controls=0&autoplay=1&loop=1&playlist=JRMqiXhKQ6s" 
+                title="guyHoldsCat" 
+                frameborder="0" 
+                allow="accelerometer; modestbranding; autoplay"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen>
+                </iframe>
+            </div>
+            `
         }
     }
 
@@ -220,20 +297,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
         window.innerHTML = `
             ${html}
-            <h3>${data.title}</h3>
+            ${data.title}
             ${data.content}`;
 
-            mw = window.querySelector('.minim')
+            mw = window.querySelector('.minim');
+            mx = window.querySelector('.maxim');
+            cl = window.querySelector('.closeBtn');
             
             addButtonEvents(mw);
+            addButtonEvents(mx);
+            addButtonEvents(cl);
 
             window.querySelector('.minim').onclick = () => minimizeWindow(id, window);
-            window.querySelector('.maxim').onclick = () => function() {
+            window.querySelector('.maxim').onclick = () => {
                 /* TODO - maximize the window when the maxim button is clicked
-                 *  - add a windowMaxed (or smth) class to apply proper styling to windows
+                 *  - add a window_maxed (or smth) class to apply proper styling to windows
                  *  - do this after setting up new structure for handling css
                  *  - might have to make a structure for handling un-minimizing windows while a window is maxed
                  */
+                // 10/1/25 has some weird ordering thing going on but i dont think i need a structure for handling it
+                window.classList.toggle('window_max');
             }
             window.querySelector('.closeBtn').onclick = () => window.remove();
             
@@ -241,6 +324,7 @@ document.addEventListener("DOMContentLoaded", function() {
             makeDraggable(window);
         
             let start = document.getElementById('start');
+            /*
             start.addEventListener('mousedown', function() {
                 start.classList.add('btnActive');
                 console.log(`click \n ${start.classList}`);
@@ -253,13 +337,13 @@ document.addEventListener("DOMContentLoaded", function() {
             start.addEventListener('mouseup', function() {
                 start.classList.remove('btnActive');
                 console.log(`unclick \n ${start.classList}`);
-            });
+            });*/
     }
 
     function minimizeWindow(id, window) {
         /*forgor a good way to call two functions on one click so im calling this here
         (i literally just do not want to look it up rn)
-        (it is currently 11:49PM and it is entirely my fault)
+        (it is almost midnight and it is entirely my fault)
         window.remove();
         nvm it doesnt work anymore
         */
@@ -307,6 +391,10 @@ document.addEventListener("DOMContentLoaded", function() {
         item.addEventListener('mouseup', function() {
             item.classList.remove('btnActive;');
         });
+        //remove later i think its not needed
+        item.addEventListener('mouseleave', function() {
+            item.classList.remove('btnActive');
+        })
     }
 
     startUp();
@@ -321,6 +409,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 return 'INTRO';
             case 'blog':
                 return 'BLOG';
+            case 'about':
+                return 'ABOUT ME';
         }
     }
 });
